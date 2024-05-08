@@ -1,0 +1,27 @@
+  on:
+    push:
+      tags:
+        - v*
+  jobs:
+    process:
+      name: build apk
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - name: set up java jdk
+          uses: actions/setup-java@v2
+          with:
+            distribution: 'zulu'
+            java-version: "11"
+        - name: flutter env
+          uses: subosito/flutter-action@v2
+          with:
+            channel: "stable"
+            flutter-version: "3.19.5"
+        - run: flutter pub get
+        - run: flutter build apk --release
+        - uses: action/upload-artifact@v1
+          with:
+            name: app
+            path: build/app/outputs/apk/release/app-release.apk
+
